@@ -1,6 +1,6 @@
 import pandas as pd
 
-FILE_ID = "1pEpYcdiSg4bxPiJDBAZoRReWXLQI7FCU"  # замените на свой ID
+FILE_ID = "1REx1HpbXT_duA4L3jfu45RG6xynAbP1p"  
 file_url = f"https://drive.google.com/uc?id={FILE_ID}"
 
 # читаем CSV с Google Drive
