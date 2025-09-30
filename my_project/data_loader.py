@@ -52,3 +52,13 @@ print("Первые строки:")
 print(raw_data.head(20))
 print("\nТипы данных:")
 print(raw_data.dtypes)
+
+# Сохранение в Parquet ("brick")
+brick_file = "dataset.brick"
+raw_data.to_parquet(brick_file, engine="pyarrow", index=False)
+print(f"\nДанные сохранены в {brick_file}")
+
+# ---- Чтение обратно ----
+df = pd.read_parquet(brick_file, engine="pyarrow")
+print("\nПроверка чтения из brick:")
+print(df.head(5))
