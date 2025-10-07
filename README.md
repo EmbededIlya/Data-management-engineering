@@ -6,3 +6,5 @@ https://drive.google.com/drive/folders/1glbcohv_ux-CrY66wIumaUGMqwwz6b5_?usp=sha
 - api_example: пример использования api
 - data: преобразованные данные в parquet
 - screenshots: снимкм экрана с выполненым заданием
+
+Ссылка на readme c проверкой заданий: https://github.com/EmbededIlya/Data-management-engineering/blob/main/Screenshots/README.md
