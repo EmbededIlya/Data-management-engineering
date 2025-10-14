@@ -1,57 +1,58 @@
-import xml.etree.ElementTree as ET
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-import pandas as pd
-import time
-import wget
-from tqdm.notebook import tqdm
 import requests
-import os
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
-# --- Настройки ---
-URL = "https://www.bn.ru/analytics/"
-OUTPUT_FILENAME = "data/cost_apartment.csv"
-CHROMEDRIVER_PATH = "C:\chromedriver-win64\chromedriver-win64/chromedriver.exe"  # укажи путь к скачанному ChromeDriver
+BASE = "https://www.bn.ru/analytics/"
 
-# Создаём папку для CSV, если её нет
-os.makedirs(os.path.dirname(OUTPUT_FILENAME), exist_ok=True)
+def fetch(url):
+    r = requests.get(url, timeout=15)
+    r.raise_for_status()
+    return r.text
 
-# --- Настройка Selenium ---
-options = Options()
-options.headless = True  # запуск без окна браузера
+def extract_urls(text, base_url):
+    urls = set()
+    for part in text.split('"'):
+        if part.startswith("http") or part.startswith("/"):
+            urls.add(urljoin(base_url, part))
+    return urls
 
-service = Service(CHROMEDRIVER_PATH)
-driver = webdriver.Chrome(service=service, options=options)
-
-try:
-    print("Открываем страницу...")
-    driver.get(URL)
-    time.sleep(5)  # ждём загрузки JS
-
-    # Получаем весь HTML после рендера
-    html = driver.page_source
+def main():
+    html = fetch(BASE)
     soup = BeautifulSoup(html, "html.parser")
 
-    # Находим статьи через BeautifulSoup
-    articles = soup.select(".analytics-item")
-    data = []
+    candidate_urls = set()
 
-    for a in articles:
-        title_elem = a.select_one(".analytics-item__title a")
-        date_elem = a.select_one(".analytics-item__date")
-        if title_elem and date_elem:
-            data.append({
-                "title": title_elem.get_text(strip=True),
-                "date": date_elem.get_text(strip=True),
-                "link": title_elem.get("href")
-            })
+    # Inline скрипты
+    for s in soup.find_all("script"):
+        if s.string:
+            candidate_urls.update(extract_urls(s.string, BASE))
+    print("\n Inline скрипты")    
+    for u in sorted(candidate_urls):
+        print(u)
 
-    # Сохраняем в CSV
-    df = pd.DataFrame(data)
-    df.to_csv(OUTPUT_FILENAME, index=False)
-    print(f"Собрано {len(df)} статей. Данные сохранены в {OUTPUT_FILENAME}")
+    # Внешние скрипты
+    for s in soup.find_all("script", src=True):
+        try:
+            candidate_urls.update(extract_urls(fetch(urljoin(BASE, s["src"])), BASE))
+        except Exception:
+            pass
+    print("\n Внешние скрипты")    
+    for u in sorted(candidate_urls):
+        print(u)
 
-finally:
-    driver.quit()
+    # Добавляем типичные endpoint'ы - пришлось залезть на сайт и посмотреть запросы
+    typical_endpoints = [
+        urljoin(BASE, "area-list/"),
+        urljoin(BASE, "area-list"),
+        urljoin(BASE, "area-avg/"),
+        urljoin(BASE, "area-avg/?date_from=2016-09&date_to=2025-09")
+    ]
+    candidate_urls.update(typical_endpoints)
+    print("\n Добавляем типичные endpoint'ы")    
+    for u in sorted(candidate_urls):
+        print(u)
+
+
+if __name__ == "__main__":
+    main()
+
