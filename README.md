@@ -9,7 +9,7 @@ https://drive.google.com/drive/folders/1glbcohv_ux-CrY66wIumaUGMqwwz6b5_?usp=sha
 
 Ссылка на readme c проверкой заданий: https://github.com/EmbededIlya/Data-management-engineering/blob/main/Screenshots/README.md
 
-## 📊 Exploratory Data Analysis
+## 📊 Визуализация данных
 
 ### Интерактивный просмотр:
 
