@@ -14,3 +14,7 @@ https://drive.google.com/drive/folders/1glbcohv_ux-CrY66wIumaUGMqwwz6b5_?usp=sha
 ### Интерактивный просмотр:
 
 [Cсылка nbviewer](https://nbviewer.org/github/EmbededIlya/Data-management-engineering/blob/main/notebook/EDA.ipynb)
+
+Так как выбранная библиотека plotly имеет в себе элементы JavaScript, то Github не пропускает и не отображает корректно графики. Сделано это в целях безопасности.
+Поэтому интерактивный график был сохранен отдельно:
+https://github.com/EmbededIlya/Data-management-engineering/blob/main/notebook/EDA_dynamics.html
