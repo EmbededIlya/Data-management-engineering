@@ -59,4 +59,4 @@ python main.py ext <FILE_ID>
 ```
 Полный ETL и запись в базу (All), используйте:
 ```bash
-    python main.py all <FILE_ID> <DB_CHOICE>
+python main.py all <FILE_ID> <DB_CHOICE>
