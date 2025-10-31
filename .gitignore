@@ -1,3 +1,4 @@
 .vscode/
 data/
 creds.db
+creds_read_to_env.py
