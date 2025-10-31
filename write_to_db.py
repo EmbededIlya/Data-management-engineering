@@ -40,11 +40,22 @@ if __name__ == "__main__":
         print(f"❌ Ошибка подключения: {e}")
         exit(1)
 
-    # --- Загружаем датасет и записываем его в timofeev ---
+    # --- Загружаем датасет ---
     data_path = r"C:\Python_projects\Data-management-engineering\notebook\data\dataset.brick"
     df = pd.read_parquet(data_path).head(100)
     df.reset_index(drop=True, inplace=True)
-    df.insert(0, "id", range(1, len(df) + 1))  # добавляем PK
+
+    # --- Убираем дублирование районов ---
+    district_column = "district"  # замените на фактическое имя колонки с районами
+    if district_column in df.columns:
+        df = df.drop_duplicates(subset=[district_column])
+        df.reset_index(drop=True, inplace=True)
+        print(f"✅ Дубли районов убраны, осталось {len(df)} строк")
+
+    # --- Добавляем PK ---
+    df.insert(0, "id", range(1, len(df) + 1))
+
+    # --- Записываем в базу ---
     df.to_sql("timofeev", engine, schema="public", if_exists="replace", index=False)
     print("✅ Данные записаны в таблицу public.timofeev")
 
