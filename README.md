@@ -68,4 +68,3 @@ Load
 All stages of data transformation started. Make sure virtual env and dependencies are set up.
 Processed data saved as PROCESSED_DATA.parquet
 Everything has been written to the database.
-=========================================================================
